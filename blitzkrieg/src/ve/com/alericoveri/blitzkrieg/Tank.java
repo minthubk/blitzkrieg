@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 
 /**
  * 
@@ -24,6 +25,13 @@ abstract public class Tank extends Actor
 	
 	/* */
 	protected int mVelocity;
+	
+	public static int MOVE_UP = 0;
+	public static int NOVE_DN = 1;
+	public static int MOVE_LT = 2;
+	public static int MOVE_RT = 3;
+	
+	private int mMoveState;
 
 	
 	/**
@@ -58,5 +66,21 @@ abstract public class Tank extends Actor
 	public void draw(SpriteBatch batch, float parentAlpha) 
 	{
 		batch.draw(mTexRegion, getX(), getY(), getWidth(), getHeight());
+	}
+	
+	public void moveRight()
+	{
+		MoveByAction action = new MoveByAction();
+		action.setAmountX(mVelocity);
+		//action.setDuration(0);
+		addAction(action);
+	}
+	
+	public void moveLeft()
+	{
+		MoveByAction action = new MoveByAction();
+		action.setAmountX(-mVelocity);
+		//action.setDuration(0);
+		addAction(action);
 	}
 }

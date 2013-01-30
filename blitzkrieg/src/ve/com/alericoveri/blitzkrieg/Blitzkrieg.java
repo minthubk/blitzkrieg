@@ -12,8 +12,8 @@ public class Blitzkrieg implements ApplicationListener
 	public static int SCREEN_HEIGHT = 480;
 		
 	private Stage mStage;
-	private PlayerTank mPlayTank;
-	private Background mBackground;
+	public static PlayerTank mPlayTank;
+	public static Background mBackground;
 	
 	
 	@Override
@@ -38,6 +38,11 @@ public class Blitzkrieg implements ApplicationListener
 		mStage.addActor(mBackground);
 		mStage.addActor(mPlayTank);
 		Gdx.input.setInputProcessor(mStage);
+	}
+	
+	public PlayerTank getPlayerTank()
+	{
+		return mPlayTank;
 	}
 
 	@Override

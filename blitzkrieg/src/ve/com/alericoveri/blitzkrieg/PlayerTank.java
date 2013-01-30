@@ -13,6 +13,8 @@ import com.badlogic.gdx.Gdx;
  */
 public class PlayerTank extends Tank
 {
+	public static float MOVE_EPSILON = 10.0f;
+	
 	/**
 	 * 
 	 * @param x
