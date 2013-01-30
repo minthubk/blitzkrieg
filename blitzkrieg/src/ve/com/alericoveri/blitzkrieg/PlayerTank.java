@@ -4,6 +4,7 @@
 
 package ve.com.alericoveri.blitzkrieg;
 
+import com.badlogic.gdx.Gdx;
 
 /**
  * 
@@ -20,7 +21,9 @@ public class PlayerTank extends Tank
 	public PlayerTank(int x, int y) 
 	{
 		super(x, y, 20);
+		Gdx.app.log("PlayerTank", "Initiating player tank ...");
 		setVisible(true);
 	}
+	
 	
 }
