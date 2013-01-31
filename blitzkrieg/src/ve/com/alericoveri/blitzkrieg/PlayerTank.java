@@ -22,7 +22,7 @@ public class PlayerTank extends Tank
 	 */
 	public PlayerTank(int x, int y) 
 	{
-		super(x, y, 20);
+		super(x, y, 120);
 		Gdx.app.log("PlayerTank", "Initiating player tank ...");
 		setVisible(true);
 	}

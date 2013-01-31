@@ -5,51 +5,37 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
 
 public class Background extends Actor 
 {
 	Texture mTexture;
-	int mLastX = 0;
-	float delta;
 	
 	public Background()
 	{
 		mTexture = new Texture (Gdx.files.internal("gfx/background.bmp"));
 		
-		addListener(new InputListener() {
-			
-			public boolean touchDown
-			(InputEvent event, float x, float y, int pointer, int button)
+		addListener (new ActorGestureListener() 
+		{
+			public void fling 
+			(InputEvent event, float velocityX, float velocityY, int button) 
 			{
-				delta = x - mLastX;
-				if (delta > PlayerTank.MOVE_EPSILON 
-	        			|| delta < -PlayerTank.MOVE_EPSILON) {
-					mLastX = (int) x;
-					return true;
+				if (Math.abs(velocityX) > Math.abs(velocityY))
+				{
+					// Horizontal
+					if (velocityX > 0.0f)
+						Blitzkrieg.mPlayTank.moveRight();
+					else Blitzkrieg.mPlayTank.moveLeft();
 				}
-				mLastX = (int) x;
-				return false;
-				
+				else 
+				{
+					// Vertical
+					if (velocityY > 0.0f)
+						Blitzkrieg.mPlayTank.moveUp();
+					else Blitzkrieg.mPlayTank.moveDown();
+				}
 			}
-			
-	        public void touchDragged
-	        (InputEvent event, float x, float y, int pointer) 
-	        {
-	        	
-	        	if (delta > 0)
-	        		Blitzkrieg.mPlayTank.moveRight();
-	        	else Blitzkrieg.mPlayTank.moveLeft();
-	
-	        }
-	        
-	        public void touchUp 
-	        (InputEvent event, float x, float y, int pointer, int button) 
-	        {
-	        	Gdx.app.log("Background", "up");
-	        }
 		});
 		
 		updateDimensions();

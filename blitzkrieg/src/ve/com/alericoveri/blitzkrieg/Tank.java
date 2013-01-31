@@ -5,8 +5,10 @@ package ve.com.alericoveri.blitzkrieg;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 
@@ -21,17 +23,17 @@ abstract public class Tank extends Actor
 	static protected Texture mTexture;
 	
 	/* */
-	private TextureRegion mTexRegion;
+	//private TextureRegion mTexRegion;
+	private Sprite mSprite;
 	
 	/* */
 	protected int mVelocity;
 	
-	public static int MOVE_UP = 0;
-	public static int NOVE_DN = 1;
-	public static int MOVE_LT = 2;
-	public static int MOVE_RT = 3;
+	public enum Direction {
+		MOVE_LT, MOVE_RT, MOVE_UP, MOVE_DN
+	}
 	
-	private int mMoveState;
+	protected Direction mDirection;
 
 	
 	/**
@@ -44,10 +46,16 @@ abstract public class Tank extends Actor
 		setX(x);
 		setY(y);
 		setVisible(false);
+		
 		mVelocity = velocity;
+		
 		if (mTexture == null)
 			mTexture = new Texture(Gdx.files.internal("gfx/tanks.png"));
-		mTexRegion = new TextureRegion(mTexture, 0, 0, 32, 32);
+		
+		mSprite = new Sprite(mTexture);
+		mSprite.setRegion(0, 0, 32, 32);
+		
+		mDirection = Direction.MOVE_RT;
 		
 		updateDimensions();
 	}
@@ -57,6 +65,7 @@ abstract public class Tank extends Actor
 		int width = (int) (0.2f * Blitzkrieg.SCREEN_WIDTH);
 		setWidth(width);
 		setHeight(width);
+		mSprite.setSize(width, width);
 	}
 	
 	/**
@@ -65,22 +74,128 @@ abstract public class Tank extends Actor
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) 
 	{
-		batch.draw(mTexRegion, getX(), getY(), getWidth(), getHeight());
+		mSprite.setPosition(getX(),getY());
+		mSprite.draw(batch);
+	}
+	
+	public void move(Direction direction)
+	{
+		MoveByAction action = new MoveByAction();
+		float distance = 0.0f;
+		
+		switch (direction) 
+		{
+		
+		case MOVE_RT:
+		case MOVE_LT:
+			distance = direction == Direction.MOVE_RT ? 
+					Blitzkrieg.SCREEN_WIDTH - getX() - getWidth()
+					:  - getX();
+			action.setAmountX(distance);
+			break;
+		
+		case MOVE_UP:
+		case MOVE_DN:
+			distance = direction == Direction.MOVE_UP ? 
+					Blitzkrieg.SCREEN_HEIGHT - getY() - getHeight()
+					:  - getY();
+			action.setAmountY(distance);
+			break;
+		}
+		
+		clearActions();
+		action.setDuration(Math.abs(distance/mVelocity));
+		action.setInterpolation(Interpolation.linear);
+		addAction(action);
+		
+		mDirection = direction;
 	}
 	
 	public void moveRight()
 	{
-		MoveByAction action = new MoveByAction();
-		action.setAmountX(mVelocity);
-		//action.setDuration(0);
-		addAction(action);
+		if (mDirection != Direction.MOVE_RT) 
+		{
+			switch (mDirection) 
+			{
+			case MOVE_LT:
+				mSprite.flip(true, false);
+				break;
+			case MOVE_DN:
+				mSprite.rotate90(false);
+				break;
+			case MOVE_UP:
+				mSprite.rotate90(true);
+			}
+			
+			move (Direction.MOVE_RT);
+		}
 	}
 	
 	public void moveLeft()
 	{
-		MoveByAction action = new MoveByAction();
-		action.setAmountX(-mVelocity);
-		//action.setDuration(0);
-		addAction(action);
+		if (mDirection != Direction.MOVE_LT) 
+		{
+			switch (mDirection) 
+			{
+			case MOVE_RT:
+				mSprite.flip(true, false);
+				break;
+			case MOVE_DN:
+				mSprite.rotate90(true);
+				break;
+			case MOVE_UP:
+				mSprite.rotate90(false);
+				break;
+			}
+			
+			move (Direction.MOVE_LT);
+		}
+	}
+	
+	public void moveUp()
+	{
+		if (mDirection != Direction.MOVE_UP) 
+		{
+			switch (mDirection) 
+			{
+			case MOVE_LT:
+				mSprite.rotate90(true);
+				break;
+			case MOVE_RT:
+				mSprite.rotate90(false);
+				break;
+			case MOVE_DN:
+				mSprite.flip(true, false);
+				break;
+			}
+			
+			move (Direction.MOVE_UP);
+		}
+	}
+	
+	public void moveDown()
+	{
+		if (mDirection != Direction.MOVE_DN) 
+		{
+			switch (mDirection) 
+			{
+			case MOVE_LT:
+				mSprite.rotate90(false);
+				break;
+			case MOVE_RT:
+				mSprite.rotate90(true);
+				break;
+			case MOVE_UP:
+				mSprite.flip(true, false);
+				break;
+			}
+			
+			move (Direction.MOVE_DN);
+		}
+	}
+
+	public Direction getDirection ()
+	{
+		return mDirection;
 	}
 }
