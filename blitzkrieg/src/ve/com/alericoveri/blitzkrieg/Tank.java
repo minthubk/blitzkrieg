@@ -5,6 +5,7 @@ package ve.com.alericoveri.blitzkrieg;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
@@ -22,8 +23,9 @@ abstract public class Tank extends Actor
 	static protected Texture mTexture;
 	
 	/* */
-	//private TextureRegion mTexRegion;
-	private Sprite mSprite;
+	private Sprite mCurrentFrame;
+	private Sprite[] mFrames;
+	private float mStateTime = 0.0f;
 	
 	/* */
 	protected int mVelocity;
@@ -33,6 +35,8 @@ abstract public class Tank extends Actor
 	}
 	
 	protected Direction mDirection;
+	
+	private Animation mAnim;
 
 	
 	/**
@@ -47,14 +51,20 @@ abstract public class Tank extends Actor
 		setVisible(false);
 		
 		mVelocity = velocity;
+		mDirection = Direction.MOVE_RT;
 		
 		if (mTexture == null)
 			mTexture = new Texture(Gdx.files.internal("gfx/tanks.png"));
 		
-		mSprite = new Sprite(mTexture);
-		mSprite.setRegion(0, 0, 32, 32);
+		mCurrentFrame 	= new Sprite();
+		mFrames 		= new Sprite[8];
 		
-		mDirection = Direction.MOVE_RT;
+		for (int i = 0; i < 8; i++) {
+			mFrames[i] = new Sprite(mTexture);
+			mFrames[i].setRegion(i * 32, 0, 32, 32);
+		}
+		
+		mAnim = new Animation (0.05f, mFrames);
 		
 		updateDimensions();
 	}
@@ -62,9 +72,11 @@ abstract public class Tank extends Actor
 	public void updateDimensions()
 	{
 		int width = (int) (0.2f * Blitzkrieg.SCREEN_WIDTH);
+		
 		setWidth(width);
 		setHeight(width);
-		mSprite.setSize(width, width);
+		
+		mCurrentFrame.setSize(width, width);
 	}
 	
 	/**
@@ -73,8 +85,27 @@ abstract public class Tank extends Actor
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) 
 	{
-		mSprite.setPosition(getX(),getY());
-		mSprite.draw(batch);
+		mStateTime += Gdx.graphics.getDeltaTime();
+		mCurrentFrame.setRegion(mAnim.getKeyFrame(mStateTime, true));
+		mCurrentFrame.setPosition(getX(),getY());
+		
+		switch(mDirection)
+		{
+		case MOVE_UP:
+			mCurrentFrame.rotate90(false);
+			break;
+		case MOVE_DN:
+			mCurrentFrame.rotate90(true);
+			break;
+		case MOVE_LT:
+			mCurrentFrame.flip(true, false);
+			break;
+		case MOVE_RT:
+			/* this is the default position */
+			break;
+		}
+		
+		mCurrentFrame.draw(batch);
 	}
 	
 	public void move(Direction direction)
@@ -112,85 +143,22 @@ abstract public class Tank extends Actor
 	
 	public void moveRight()
 	{
-		if (mDirection != Direction.MOVE_RT) 
-		{
-			switch (mDirection) 
-			{
-			case MOVE_LT:
-				mSprite.flip(true, false);
-				break;
-			case MOVE_DN:
-				mSprite.rotate90(false);
-				break;
-			case MOVE_UP:
-				mSprite.rotate90(true);
-			}
-			
-			move (Direction.MOVE_RT);
-		}
+		move (Direction.MOVE_RT);
 	}
 	
 	public void moveLeft()
 	{
-		if (mDirection != Direction.MOVE_LT) 
-		{
-			switch (mDirection) 
-			{
-			case MOVE_RT:
-				mSprite.flip(true, false);
-				break;
-			case MOVE_DN:
-				mSprite.rotate90(true);
-				break;
-			case MOVE_UP:
-				mSprite.rotate90(false);
-				break;
-			}
-			
-			move (Direction.MOVE_LT);
-		}
+		move (Direction.MOVE_LT);
 	}
 	
 	public void moveUp()
 	{
-		if (mDirection != Direction.MOVE_UP) 
-		{
-			switch (mDirection) 
-			{
-			case MOVE_LT:
-				mSprite.rotate90(true);
-				break;
-			case MOVE_RT:
-				mSprite.rotate90(false);
-				break;
-			case MOVE_DN:
-				mSprite.flip(true, false);
-				break;
-			}
-			
-			move (Direction.MOVE_UP);
-		}
+		move (Direction.MOVE_UP);
 	}
 	
 	public void moveDown()
-	{
-		if (mDirection != Direction.MOVE_DN) 
-		{
-			switch (mDirection) 
-			{
-			case MOVE_LT:
-				mSprite.rotate90(false);
-				break;
-			case MOVE_RT:
-				mSprite.rotate90(true);
-				break;
-			case MOVE_UP:
-				mSprite.flip(true, false);
-				break;
-			}
-			
-			move (Direction.MOVE_DN);
-		}
+	{	
+		move (Direction.MOVE_DN);
 	}
 
 	public Direction getDirection ()
