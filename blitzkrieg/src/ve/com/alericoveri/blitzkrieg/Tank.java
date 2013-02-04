@@ -15,11 +15,11 @@
  * in a product, an acknowledgment in the product documentation would be
  * appreciated but is not required.
  *
- *2. Altered source versions must be plainly marked as such, and must not be
- *misrepresented as being the original software.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ * misrepresented as being the original software.
  *
- *3. This notice may not be removed or altered from any source
- *distribution.
+ * 3. This notice may not be removed or altered from any source
+ * distribution.
  */
 
 package ve.com.alericoveri.blitzkrieg;
@@ -39,7 +39,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
  * @author Alejandro Ricoveri
  * 
  */
-abstract public class Tank extends Actor {
+abstract public class Tank extends Projectile {
 	/* */
 	static protected Texture mTexture;
 
@@ -51,12 +51,7 @@ abstract public class Tank extends Actor {
 	/* */
 	protected int mVelocity;
 
-	public enum Direction {
-		LEFT, 
-		RIGHT, 
-		UP, 
-		DOWN
-	}
+	
 	
 	public enum State 
 	{
@@ -69,8 +64,6 @@ abstract public class Tank extends Actor {
 	
 	private State mState;
 
-	protected Direction mDirection;
-
 	private Animation mAnim;
 
 	/**
@@ -79,6 +72,7 @@ abstract public class Tank extends Actor {
 	 * @param y
 	 */
 	public Tank(int x, int y, int velocity) {
+		super (x, y, velocity)
 		setX(x);
 		setY(y);
 		setVisible(false);
