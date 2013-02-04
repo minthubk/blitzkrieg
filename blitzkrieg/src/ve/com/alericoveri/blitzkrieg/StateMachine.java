@@ -46,7 +46,11 @@ public class StateMachine
 	{
 		/** */
 		private StateMachine mParent;
+		
+		/** */
 		protected T mObject;
+		
+		/** */
 		protected String mKey;
 		
 		/** */

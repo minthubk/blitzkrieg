@@ -29,17 +29,27 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
+/**
+ *
+ */
 public class Blitzkrieg implements ApplicationListener 
 {
 	//whatever screen width and height we want to have in the desktop version
+	/** */
 	public static int SCREEN_WIDTH 	= 800;
+	
+	/** */
 	public static int SCREEN_HEIGHT = 480;
+	
+	/** */
 	public static PlayerTank PlayerTank;
+	
+	/** */
 	public static Background Background;
 		
 	private Stage mStage;
 	
-	
+	/** */
 	@Override
 	public void create() 
 	{
@@ -52,6 +62,7 @@ public class Blitzkrieg implements ApplicationListener
 		setupStage();
 	}
 	
+	/** */
 	public void setupStage()
 	{
 		mStage = new Stage(SCREEN_WIDTH, SCREEN_HEIGHT, true);
@@ -68,12 +79,14 @@ public class Blitzkrieg implements ApplicationListener
 		Gdx.input.setInputProcessor(mStage);
 	}
 	
+	/** */
 	@Override
 	public void dispose() 
 	{
 		mStage.dispose();
 	}
 
+	/** */
 	@Override
 	public void render() 
 	{	
@@ -86,6 +99,7 @@ public class Blitzkrieg implements ApplicationListener
 		mStage.draw();
 	}
 
+	/** */
 	@Override
 	public void resize(int width, int height) 
 	{
@@ -98,11 +112,13 @@ public class Blitzkrieg implements ApplicationListener
 		Background.updateDimensions();
 	}
 
+	/** */
 	@Override
 	public void pause() 
 	{
 	}
 
+	/** */
 	@Override
 	public void resume() 
 	{

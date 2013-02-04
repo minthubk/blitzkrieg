@@ -31,16 +31,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /**
- * 
- * @author Alejandro Ricoveri
  *
  */
 abstract public class Projectile extends Actor
 {
+	/** */
 	protected int mVelocity;
+	
+	/** */
 	private StateMachine mStateMachine;
+	
+	/** */
 	protected Direction mDirection;
 	
+	/** */
 	public enum Direction {
 		LEFT, 
 		RIGHT, 
@@ -48,6 +52,7 @@ abstract public class Projectile extends Actor
 		DOWN
 	}
 	
+	/** */
 	public Projectile(int x, int y, int velocity)
 	{
 		mVelocity = velocity;
@@ -82,11 +87,13 @@ abstract public class Projectile extends Actor
 		mStateMachine.register( 
 		new State<Projectile>("ST_MOVE", mStateMachine, this) {
 			
+			/** */
 			@Override
 			public void onEnter() {
 				mObject.onMoveBegin();
 			}
 
+			/** */
 			@Override
 			public void onExec(SpriteBatch batch, float parentAlpha) {
 				
@@ -111,6 +118,7 @@ abstract public class Projectile extends Actor
 				mObject.onMove(batch, parentAlpha);
 			}
 
+			/** */
 			@Override
 			public void onExit() {
 				mObject.onMoveEnd();
@@ -146,26 +154,31 @@ abstract public class Projectile extends Actor
 		mStateMachine.swap(stateName);
 	}
 	
+	/** */
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) 
 	{
 		mStateMachine.run(batch, parentAlpha);
 	}
 	
+	/** */
 	public void move(Direction direction) 
 	{
 		mDirection = direction;
 		mStateMachine.swap("ST_MOVE");
 	}
 
+	/** */
 	public void moveRight() {
 		move(Direction.RIGHT);
 	}
 
+	/** */
 	public void moveLeft() {
 		move(Direction.LEFT);
 	}
 
+	/** */
 	public void moveUp() {
 		move(Direction.UP);
 	}
@@ -174,10 +187,12 @@ abstract public class Projectile extends Actor
 		move(Direction.DOWN);
 	}
 
+	/** */
 	public Direction getDirection() {
 		return mDirection;
 	}
 	
+	/** */
 	public void stop()
 	{
 		mStateMachine.swap("ST_STOP");
