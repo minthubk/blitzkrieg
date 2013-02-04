@@ -1,5 +1,5 @@
 /*
- * Blizkrieg: Yet another fun and simple game
+ * Blizkrieg: Yet another fun game for Android
  * Copyright (c) 2013 Alejandro Ricoveri <alejandroricoveri@gmail.com>
  * 
  * This software is provided 'as-is', without any express or implied
@@ -29,20 +29,29 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+/**
+ * A background image
+ * 
+ * @author Alejandro Ricoveri
+ */
 public class Background extends Actor {
+	
+	/** The image texture */
 	Texture mTexture;
 
+	/** Ctor */
 	public Background() {
 		mTexture = new Texture(Gdx.files.internal("gfx/background.bmp"));
-
 		updateDimensions();
 	}
 
+	/** Update width and height (in pixels) covering the entire screen */
 	public void updateDimensions() {
 		setWidth(Blitzkrieg.SCREEN_WIDTH);
 		setHeight(Blitzkrieg.SCREEN_HEIGHT);
 	}
 
+	/** Render the image */
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		batch.draw(mTexture, 0, 0, getWidth(), getHeight());

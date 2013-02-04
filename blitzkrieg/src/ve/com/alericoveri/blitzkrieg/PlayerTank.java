@@ -1,5 +1,5 @@
 /*
- * Blizkrieg: Yet another fun and simple game
+ * Blizkrieg: Yet another fun game for Android
  * Copyright (c) 2013 Alejandro Ricoveri <alejandroricoveri@gmail.com>
  * 
  * This software is provided 'as-is', without any express or implied
@@ -28,6 +28,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
+ * Player tank
  * 
  * @author Alejandro Ricoveri
  * 
@@ -36,45 +37,56 @@ public class PlayerTank extends Tank {
 	public static float MOVE_EPSILON = 10.0f;
 
 	/**
+	 * Ctor
 	 * 
 	 * @param x
+	 *            left coordinate in pixels
 	 * @param y
+	 *            top coordintate in pixels
 	 */
 	public PlayerTank(int x, int y) {
 		super(x, y, 120);
 		Gdx.app.log("PlayerTank", "Initiating player tank ...");
 		setVisible(true);
 	}
-	
-	/** World collision detection */
+
+	/**
+	 * World collision detection
+	 * 
+	 * @param batch
+	 *            shared sprite batch for rendering
+	 * @param alpha
+	 *            channel of this object's parent
+	 */
 	@Override
-	public void onMove (SpriteBatch batch, float parentAlpha)
-	{
-		boolean collision = false;
+	public void onMove(SpriteBatch batch, float parentAlpha) {
 		
+		// Set to true when tank has collided with stage edges
+		boolean hasCollided = false;
+
 		// x
-		if (getX() < 0) { 
-			setX(0); collision = true;
-		}
-		else if (getX() + getWidth() > Blitzkrieg.SCREEN_WIDTH) {
+		if (getX() < 0) {
+			setX(0);
+			hasCollided = true;
+		} else if (getX() + getWidth() > Blitzkrieg.SCREEN_WIDTH) {
 			setX(Blitzkrieg.SCREEN_WIDTH - getWidth());
-			collision = true;
+			hasCollided = true;
 		}
-		
+
 		// y
-		if (getY() < 0) { 
-			setY(0); collision = true;
-		}
-		else if (getY() + getHeight() > Blitzkrieg.SCREEN_HEIGHT) {
+		if (getY() < 0) {
+			setY(0);
+			hasCollided = true;
+		} else if (getY() + getHeight() > Blitzkrieg.SCREEN_HEIGHT) {
 			setY(Blitzkrieg.SCREEN_HEIGHT - getHeight());
-			collision = true;
+			hasCollided = true;
 		}
-		
+
 		// do the usual drawing
 		super.onMove(batch, parentAlpha);
-		
+
 		// swap to still state if any collision ocurred
-		if (collision)
+		if (hasCollided)
 			swap("ST_STILL");
 	}
 

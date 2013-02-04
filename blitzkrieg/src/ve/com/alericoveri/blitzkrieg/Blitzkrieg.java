@@ -1,5 +1,5 @@
 /*
- * Blizkrieg: Yet another fun and simple game
+ * Blizkrieg: Yet another fun game for Android
  * Copyright (c) 2013 Alejandro Ricoveri <alejandroricoveri@gmail.com>
  * 
  * This software is provided 'as-is', without any express or implied
@@ -30,97 +30,103 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 /**
- *
+ * Game entry point
+ * 
+ * @author Alejandro Ricoveri
  */
-public class Blitzkrieg implements ApplicationListener 
-{
-	//whatever screen width and height we want to have in the desktop version
-	/** */
-	public static int SCREEN_WIDTH 	= 800;
-	
-	/** */
-	public static int SCREEN_HEIGHT = 480;
-	
-	/** */
+public class Blitzkrieg implements ApplicationListener {
+	// whatever screen width and height we want to have in the desktop version
+	/** Screen width */
+	public static int SCREEN_WIDTH;
+
+	/** Screen height in pixels */
+	public static int SCREEN_HEIGHT;
+
+	/** Unique instance for the player tank */
 	public static PlayerTank PlayerTank;
-	
-	/** */
+
+	/** Background image */
 	public static Background Background;
-		
+
+	/** Game stage */
 	private Stage mStage;
-	
-	/** */
+
+	/** Initialization method */
 	@Override
-	public void create() 
-	{
-		// we'll get whatever the set width is- 800x480 above, 
+	public void create() {
+		// we'll get whatever the set width is- 800x480 above,
 		// but will be the device resolution when running the android version
-		SCREEN_WIDTH 	= Gdx.graphics.getWidth();
-		SCREEN_HEIGHT 	= Gdx.graphics.getHeight();
-		
+		SCREEN_WIDTH = Gdx.graphics.getWidth();
+		SCREEN_HEIGHT = Gdx.graphics.getHeight();
+
 		/* set up the stage */
 		setupStage();
 	}
-	
-	/** */
-	public void setupStage()
-	{
+
+	/** Setup the stage, where everything occurs */
+	public void setupStage() {
+		
+		// Create the stage
 		mStage = new Stage(SCREEN_WIDTH, SCREEN_HEIGHT, true);
-		
-		PlayerTank = new PlayerTank(0,0);
+
+		// Create the player tank
+		PlayerTank = new PlayerTank(0, 0);
+
+		// Create the background
 		Background = new Background();
-		
+
+		// Assign input listener for the whole stage
 		mStage.addListener(new TankGestureListener());
-		
-		
+
+		// Add the actors
 		mStage.addActor(Background);
 		mStage.addActor(PlayerTank);
-		
+
+		// Setting this stage as the input processor
 		Gdx.input.setInputProcessor(mStage);
 	}
-	
-	/** */
+
+	/** Get rid of this object */
 	@Override
-	public void dispose() 
-	{
+	public void dispose() {
 		mStage.dispose();
 	}
 
-	/** */
+	/** Render the screen */
 	@Override
-	public void render() 
-	{	
+	public void render() {
 		/* Clear color */
-		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1f );
-		Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT );
-        
-        /* Draw the scene! */
+		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		/* Draw the scene! */
 		mStage.act(Gdx.graphics.getDeltaTime());
 		mStage.draw();
 	}
 
-	/** */
+	/** This is called everything gfx context is resized */
 	@Override
-	public void resize(int width, int height) 
-	{
-		SCREEN_WIDTH 	= Gdx.graphics.getWidth();
-		SCREEN_HEIGHT 	= Gdx.graphics.getHeight();
-		
+	public void resize(int width, int height) {
+
+		// Set width and height
+		SCREEN_WIDTH = Gdx.graphics.getWidth();
+		SCREEN_HEIGHT = Gdx.graphics.getHeight();
+
+		// Set the stage viewport
 		mStage.setViewport(width, height, true);
-		
+
+		// Update dimensions for this entities as well
 		PlayerTank.updateDimensions();
 		Background.updateDimensions();
 	}
 
-	/** */
+	/** Game has been paused */
 	@Override
-	public void pause() 
-	{
+	public void pause() {
 	}
 
-	/** */
+	/** Game has resumed */
 	@Override
-	public void resume() 
-	{
+	public void resume() {
 	}
 }

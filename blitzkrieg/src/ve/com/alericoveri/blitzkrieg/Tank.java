@@ -31,26 +31,34 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
+ * A Tank
  * 
  * @author Alejandro Ricoveri
  * 
  */
 abstract public class Tank extends Projectile {
-	/* */
+	
+	/** Image asset used for the tanks */
 	static protected Texture mTexture;
 
-	/* */
+	/** Current frame to be rendered */
 	private Sprite mCurrentFrame;
+	
+	/** All frames used for the tank's animation */
 	private Sprite[] mFrames;
+	
+	/** Reference time variable to be used on animation */
 	private float mStateTime = 0.0f;
 
-	/* */
+	/** The animation instance */
 	private Animation mAnim;
 
 	/**
+	 * Ctor
 	 * 
-	 * @param x
-	 * @param y
+	 * @param x Initial top coordinate for this object
+	 * @param y Initial left coordinate for this object
+	 * @param velocity Initial velocity for this object
 	 */
 	public Tank(int x, int y, int velocity) 
 	{
@@ -62,17 +70,22 @@ abstract public class Tank extends Projectile {
 		mCurrentFrame = new Sprite();
 		mFrames = new Sprite[8];
 
+		// Create frames based on tecture
 		for (int i = 0; i < 8; i++) {
 			mFrames[i] = new Sprite(mTexture);
 			mFrames[i].setRegion(i * 32, 0, 32, 32);
 		}
 
+		// Create animation
 		mAnim = new Animation(0.05f, mFrames);
 		
+		// Update dimensions for this tank
 		updateDimensions();
 	}
 	
-	/** */
+	/** 
+	 * Update dimensions for this object
+	 */
 	public void updateDimensions() {
 		int width = (int) (0.2f * Blitzkrieg.SCREEN_WIDTH);
 

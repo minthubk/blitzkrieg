@@ -31,42 +31,58 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /**
- *
+ * A simple projectile
+ * 
+ * @author Alejandro Ricoveri
  */
-abstract public class Projectile extends Actor
-{
-	/** */
+abstract public class Projectile extends Actor {
+	
+	/** Velocity */
 	protected int mVelocity;
-	
-	/** */
+
+	/** State machine */
 	private StateMachine mStateMachine;
-	
-	/** */
+
+	/** Direction */
 	protected Direction mDirection;
-	
-	/** */
+
 	public enum Direction {
-		LEFT, 
-		RIGHT, 
-		UP, 
-		DOWN
+		LEFT, RIGHT, UP, DOWN
 	}
-	
-	/** */
-	public Projectile(int x, int y, int velocity)
-	{
+
+	/**
+	 * Ctor
+	 * 
+	 * @param x
+	 *            Initial left coordinate for this object
+	 * @param y
+	 *            Initial top coordinate for this object
+	 * @param velocity
+	 *            Velocity factor for this object
+	 */
+	public Projectile(int x, int y, int velocity) {
+		// Set initial velocity
 		mVelocity = velocity;
+
+		// Initial direction
 		mDirection = Direction.RIGHT;
+
+		// Create a new state machine implementation
 		mStateMachine = new StateMachine("Projectile");
-		
+
+		// Initial coordinates
 		setX(x);
 		setY(y);
+
+		// Let this be visible at once
 		setVisible(false);
-		
-		// states
-		mStateMachine.register(
-		new State<Projectile>("ST_STILL", mStateMachine, this) {
-			
+
+		/* states for this projectile */
+
+		// Still state
+		mStateMachine.register(new State<Projectile>("ST_STILL", mStateMachine,
+				this) {
+
 			@Override
 			public void onEnter() {
 				mObject.onStillBegin();
@@ -81,25 +97,29 @@ abstract public class Projectile extends Actor
 			public void onExit() {
 				mObject.onStillEnd();
 			}
-		}
-		);
-		
-		mStateMachine.register( 
-		new State<Projectile>("ST_MOVE", mStateMachine, this) {
-			
-			/** */
+		});
+
+		// On movement state
+		mStateMachine.register(new State<Projectile>("ST_MOVE", mStateMachine,
+				this) {
+
 			@Override
 			public void onEnter() {
 				mObject.onMoveBegin();
 			}
 
-			/** */
+			/** Calculate position each frame */
 			@Override
 			public void onExec(SpriteBatch batch, float parentAlpha) {
-				
+
+				// Time differential
 				float deltaTime = Gdx.graphics.getDeltaTime();
-				int dxy =  (int) (mObject.mVelocity * deltaTime);
-				
+
+				// Distance differential
+				int dxy = (int) (mObject.mVelocity * deltaTime);
+
+				// Calculate movement based on direction,
+				// velocity and time differentials
 				switch (mDirection) {
 				case UP:
 					mObject.setPosition(getX(), getY() + dxy);
@@ -115,86 +135,96 @@ abstract public class Projectile extends Actor
 					mObject.setPosition(getX() + dxy, getY());
 					break;
 				}
+
+				// Call the onMove callback for custom code
 				mObject.onMove(batch, parentAlpha);
 			}
 
-			/** */
+			/** Call onMoveEnd callback */
 			@Override
 			public void onExit() {
 				mObject.onMoveEnd();
 			}
-		}
-		);
-		
+		});
+
+		// Set initial state to still
 		mStateMachine.push("ST_STILL");
 	}
-	
-	/** */
-	public void onMoveBegin () {}
-	public void onMove (SpriteBatch batch, float parentAlpha) {}
-	public void onMoveEnd () {}
-	
-	/** */
-	public void onStillBegin () {}
-	public void onStill (SpriteBatch batch, float parentAlpha) {}
-	public void onStillEnd () {}
-	
-	/** */
-	public void pop () {
+
+	/** ST_MOVE callbacks, can be overridden */
+	public void onMoveBegin() {
+	}
+
+	public void onMove(SpriteBatch batch, float parentAlpha) {
+	}
+
+	public void onMoveEnd() {
+	}
+
+	/** ST_STILL callbacks, can be overridden */
+	public void onStillBegin() {
+	}
+
+	public void onStill(SpriteBatch batch, float parentAlpha) {
+	}
+
+	public void onStillEnd() {
+	}
+
+	/** Pop out an state from the state machine */
+	public void pop() {
 		mStateMachine.pop();
 	}
-	
-	/** */
-	public void push (String stateName) {
+
+	/** Push an already registered state to the state machine */
+	public void push(String stateName) {
 		mStateMachine.push(stateName);
 	}
-	
-	/** */
-	public void swap (String stateName) {
+
+	/** Swap to a prevoiusly registered state to the state machine */
+	public void swap(String stateName) {
 		mStateMachine.swap(stateName);
 	}
-	
-	/** */
+
+	/** Call current state run() callback */
 	@Override
-	public void draw(SpriteBatch batch, float parentAlpha) 
-	{
+	public void draw(SpriteBatch batch, float parentAlpha) {
 		mStateMachine.run(batch, parentAlpha);
 	}
-	
-	/** */
-	public void move(Direction direction) 
-	{
+
+	/** Set direction and change state to moving mode */
+	public void move(Direction direction) {
 		mDirection = direction;
 		mStateMachine.swap("ST_MOVE");
 	}
 
-	/** */
+	/** Move right */
 	public void moveRight() {
 		move(Direction.RIGHT);
 	}
 
-	/** */
+	/** Move left */
 	public void moveLeft() {
 		move(Direction.LEFT);
 	}
 
-	/** */
+	/** Move up */
 	public void moveUp() {
 		move(Direction.UP);
 	}
 
+	/** Move down */
 	public void moveDown() {
 		move(Direction.DOWN);
 	}
 
-	/** */
+	/** Get direction of this projectile */
 	public Direction getDirection() {
 		return mDirection;
 	}
-	
-	/** */
-	public void stop()
-	{
+
+	/** Stop (still) this */
+	public void stop() {
 		mStateMachine.swap("ST_STOP");
 	}
 }

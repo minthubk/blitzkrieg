@@ -1,5 +1,5 @@
 /*
- * Blizkrieg: Yet another fun and simple game
+ * Blizkrieg: Yet another fun game for Android
  * Copyright (c) 2013 Alejandro Ricoveri <alejandroricoveri@gmail.com>
  * 
  * This software is provided 'as-is', without any express or implied
@@ -24,11 +24,20 @@
 
 package ve.com.alericoveri.blitzkrieg;
 
+/**
+ * Enemy tank
+ * 
+ * @author Alejandro Ricoveri
+ * 
+ */
 public class EnemyTank extends Tank {
 	/**
+	 * Ctor
 	 * 
 	 * @param x
+	 *            left coordinate in pixels
 	 * @param y
+	 *            top coordinate in pixels
 	 */
 	public EnemyTank(int x, int y) {
 		super(x, y, 30);
