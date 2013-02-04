@@ -52,4 +52,10 @@ public class TankGestureListener extends ActorGestureListener
 			else Blitzkrieg.PlayerTank.moveDown();
 		}
 	}
+	
+	@Override
+	/** */
+	public void tap (InputEvent event, float x, float y, int count, int button) {
+		Blitzkrieg.PlayerTank.shoot();
+	}
 }

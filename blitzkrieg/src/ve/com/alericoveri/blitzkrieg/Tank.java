@@ -106,6 +106,12 @@ abstract public class Tank extends Projectile {
 	}
 	
 	/** */
+	public void shoot()
+	{
+		getStage().addActor(new Bullet(this));
+	}
+	
+	/** */
 	protected void flip()
 	{
 		switch (mDirection) {

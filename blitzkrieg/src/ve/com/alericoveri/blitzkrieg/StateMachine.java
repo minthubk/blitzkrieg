@@ -40,7 +40,7 @@ public class StateMachine {
 	 * An state
 	 */
 	abstract public static class State<T> {
-		
+
 		/** The state machine who owns this state */
 		private StateMachine mParent;
 
@@ -50,9 +50,8 @@ public class StateMachine {
 		/** Key (unique name) or this state */
 		protected String mKey;
 
-		/** 
-		 * This will be called when this state goes on top of his parent's
-		 * stack  
+		/**
+		 * This will be called when this state goes on top of his parent's stack
 		 */
 		abstract public void onEnter();
 
@@ -93,10 +92,11 @@ public class StateMachine {
 	/** Implementation name */
 	private String mImpName;
 
-	/** 
+	/**
 	 * Ctor
 	 * 
-	 * @param impName Implementation Name
+	 * @param impName
+	 *            Implementation Name
 	 */
 	public StateMachine(String impName) {
 		mImpName = impName;
@@ -120,7 +120,8 @@ public class StateMachine {
 	/**
 	 * Push an state to the stack, must be prevoiusly registered
 	 * 
-	 * @param stateName Unique name of the state to be pushed
+	 * @param stateName
+	 *            Unique name of the state to be pushed
 	 */
 	public void push(String stateName) {
 		if (!mRegStates.isEmpty()) {
@@ -133,10 +134,11 @@ public class StateMachine {
 		}
 	}
 
-	/** 
+	/**
 	 * Pop current state from the stack and then push a new one
 	 * 
-	 * @param stateName Unique name of the state to be pushed
+	 * @param stateName
+	 *            Unique name of the state to be pushed
 	 */
 	public void swap(String stateName) {
 		if (mStates.firstElement().getKey() != stateName) {
@@ -159,7 +161,8 @@ public class StateMachine {
 	/**
 	 * Register a new state
 	 * 
-	 * @param state the state to be registered
+	 * @param state
+	 *            the state to be registered
 	 */
 	public void register(State<?> state) {
 		if (!mRegStates.containsKey(state.getKey()))
@@ -168,9 +171,6 @@ public class StateMachine {
 
 	/**
 	 * This will execute the current state on top of the stack
-	 * 
-	 * @param batch
-	 * @param parentAlpha
 	 */
 	public void run(SpriteBatch batch, float parentAlpha) {
 		if (!mStates.empty())
