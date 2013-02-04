@@ -25,6 +25,7 @@
 package ve.com.alericoveri.blitzkrieg;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
  * 
@@ -43,6 +44,38 @@ public class PlayerTank extends Tank {
 		super(x, y, 120);
 		Gdx.app.log("PlayerTank", "Initiating player tank ...");
 		setVisible(true);
+	}
+	
+	/** World collision detection */
+	@Override
+	public void onMove (SpriteBatch batch, float parentAlpha)
+	{
+		boolean collision = false;
+		
+		// x
+		if (getX() < 0) { 
+			setX(0); collision = true;
+		}
+		else if (getX() + getWidth() > Blitzkrieg.SCREEN_WIDTH) {
+			setX(Blitzkrieg.SCREEN_WIDTH - getWidth());
+			collision = true;
+		}
+		
+		// y
+		if (getY() < 0) { 
+			setY(0); collision = true;
+		}
+		else if (getY() + getHeight() > Blitzkrieg.SCREEN_HEIGHT) {
+			setY(Blitzkrieg.SCREEN_HEIGHT - getHeight());
+			collision = true;
+		}
+		
+		// do the usual drawing
+		super.onMove(batch, parentAlpha);
+		
+		// swap to still state if any collision ocurred
+		if (collision)
+			swap("ST_STILL");
 	}
 
 }
