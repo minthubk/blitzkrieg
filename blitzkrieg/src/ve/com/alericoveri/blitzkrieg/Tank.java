@@ -29,10 +29,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 /**
  * 
@@ -49,21 +45,6 @@ abstract public class Tank extends Projectile {
 	private float mStateTime = 0.0f;
 
 	/* */
-	protected int mVelocity;
-
-	
-	
-	public enum State 
-	{
-		STILL,
-		MOVING,
-		ATTACK,
-		EVASION,
-		DEAD
-	}
-	
-	private State mState;
-
 	private Animation mAnim;
 
 	/**
@@ -71,14 +52,9 @@ abstract public class Tank extends Projectile {
 	 * @param x
 	 * @param y
 	 */
-	public Tank(int x, int y, int velocity) {
-		super (x, y, velocity)
-		setX(x);
-		setY(y);
-		setVisible(false);
-
-		mVelocity = velocity;
-		mDirection = Direction.RIGHT;
+	public Tank(int x, int y, int velocity) 
+	{
+		super (x, y, velocity);
 
 		if (mTexture == null)
 			mTexture = new Texture(Gdx.files.internal("gfx/tanks.png"));
@@ -93,20 +69,10 @@ abstract public class Tank extends Projectile {
 
 		mAnim = new Animation(0.05f, mFrames);
 		
-		
-		mState = State.STILL;
-		
 		updateDimensions();
 	}
 	
-	public void setState(State state) {
-		mState = state;
-	}
-	
-	public State getState(State state) {
-		return mState;
-	}
-
+	/** */
 	public void updateDimensions() {
 		int width = (int) (0.2f * Blitzkrieg.SCREEN_WIDTH);
 
@@ -115,94 +81,43 @@ abstract public class Tank extends Projectile {
 
 		mCurrentFrame.setSize(width, width);
 	}
-
-	/**
-	 * 
-	 */
+	
+	/** */
+	@Override
+	public void onMove (SpriteBatch batch, float parentAlpha)
+	{
+		mStateTime += Gdx.graphics.getDeltaTime();
+		mCurrentFrame.setRegion(mAnim.getKeyFrame(mStateTime, true));
+		mCurrentFrame.setPosition(getX(), getY());
+		
+		switch (mDirection) {
+		case UP:
+			mCurrentFrame.rotate90(false);
+			break;
+		case DOWN:
+			mCurrentFrame.rotate90(true);
+			break;
+		case LEFT:
+			mCurrentFrame.flip(true, false);
+			break;
+		case RIGHT:
+			/* this is the default position */
+			break;
+		}
+	}
+	
+	/** */
+	@Override
+	public void onStill (SpriteBatch batch, float parentAlpha)
+	{
+		mCurrentFrame.setRegion(mFrames[0]);
+	}
+	
+	/** */
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) 
 	{
-		if (mState == State.MOVING)
-			mStateTime += Gdx.graphics.getDeltaTime();
-		
-		mCurrentFrame.setRegion(mAnim.getKeyFrame(mStateTime, true));
-		
-		if (mState == State.MOVING) 
-		{
-			mCurrentFrame.setPosition(getX(), getY());
-			
-			switch (mDirection) {
-			case UP:
-				mCurrentFrame.rotate90(false);
-				break;
-			case DOWN:
-				mCurrentFrame.rotate90(true);
-				break;
-			case LEFT:
-				mCurrentFrame.flip(true, false);
-				break;
-			case RIGHT:
-				/* this is the default position */
-				break;
-			}
-		}
+		super.draw(batch, parentAlpha);
 		mCurrentFrame.draw(batch);
-	}
-	
-	public void stop()
-	{
-		mState = State.STILL;
-	}
-
-	public void move(Direction direction) {
-		MoveByAction action = new MoveByAction();
-		float distance = 0.0f;
-
-		switch (direction) {
-
-		case RIGHT:
-		case LEFT:
-			distance = direction == Direction.RIGHT ? Blitzkrieg.SCREEN_WIDTH
-					- getX() - getWidth() : -getX();
-			action.setAmountX(distance);
-			break;
-
-		case UP:
-		case DOWN:
-			distance = direction == Direction.UP ? Blitzkrieg.SCREEN_HEIGHT
-					- getY() - getHeight()
-					: -getY();
-			action.setAmountY(distance);
-			break;
-		}
-
-		clearActions();
-		action.setDuration(Math.abs(distance / mVelocity));
-		action.setInterpolation(Interpolation.linear);
-		//action.
-		addAction(action);
-		mDirection = direction;
-		
-		mState = State.MOVING;
-	}
-
-	public void moveRight() {
-		move(Direction.RIGHT);
-	}
-
-	public void moveLeft() {
-		move(Direction.LEFT);
-	}
-
-	public void moveUp() {
-		move(Direction.UP);
-	}
-
-	public void moveDown() {
-		move(Direction.DOWN);
-	}
-
-	public Direction getDirection() {
-		return mDirection;
 	}
 }

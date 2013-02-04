@@ -24,8 +24,11 @@
 
 package ve.com.alericoveri.blitzkrieg;
 
-import java.util.Map;
 import java.util.Stack;
+import java.util.TreeMap;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
  * 
@@ -39,16 +42,18 @@ public class StateMachine
 	 * @author alejandro
 	 *
 	 */
-	abstract public class State 
+	abstract public static class State<T> 
 	{
 		/** */
 		private StateMachine mParent;
+		protected T mObject;
+		protected String mKey;
 		
 		/** */
 		abstract public void onEnter();
 		
 		/** */
-		abstract public void onExec();
+		abstract public void onExec(SpriteBatch batch, float parentAlpha);
 		
 		/** */
 		abstract public void onExit();
@@ -64,8 +69,14 @@ public class StateMachine
 		}
 		
 		/** */
-		public State (StateMachine parent) {
+		public State (String key, StateMachine parent, T object) {
 			mParent = parent;
+			mObject = object;
+			mKey = key;
+		}
+		
+		public String getKey() {
+			return mKey;
 		}
 	}
 	
@@ -73,7 +84,7 @@ public class StateMachine
 	private Stack<State> mStates;
 	
 	/** */
-	private Map<String, State> mRegStates;
+	private TreeMap<String,State> mRegStates;
 	
 	/** */
 	private String mImpName;
@@ -82,7 +93,8 @@ public class StateMachine
 	public StateMachine (String impName) {
 		mImpName 	= impName;
 		mStates 	= new Stack<State>();
-		//mRegStates 	= new Map<String,State>();
+		mRegStates 	= new TreeMap<String, State>();
+		Gdx.app.log("StateMachine","new implementation '"+mImpName+"'");
 	}
 	
 	/** */
@@ -98,7 +110,7 @@ public class StateMachine
 	/** */
 	public void push (String stateName) {
 		if (!mRegStates.isEmpty()) {
-			if (mRegStates.containsValue(stateName)) {
+			if (mRegStates.containsKey(stateName)) {
 				if (!mStates.empty())
 					mStates.firstElement().onExit();
 				mStates.push(mRegStates.get(stateName));
@@ -109,26 +121,28 @@ public class StateMachine
 	
 	/** */
 	public void swap (String stateName) {
-		pop();
-		push(stateName);
+		if (mStates.firstElement().getKey() != stateName) {
+			pop();
+			push(stateName);
+		}
 	}
 	
 	/** */
-	public State getCurrentState () {
+	public State<?> getCurrentState () {
 		if (!mStates.empty())
 			return mStates.firstElement();
 		return null;
 	}
 	
 	/** */
-	public void register (String stateName, State state) {
-		if (!mRegStates.containsKey(stateName))
-			mRegStates.put(stateName, state);
+	public void register (State<?> state) {
+			if (!mRegStates.containsKey(state.getKey()))
+				mRegStates.put(state.getKey(), state);
 	}
 	
 	/** */
-	public void run () {
+	public void run (SpriteBatch batch, float parentAlpha) {
 		if (!mStates.empty())
-			mStates.firstElement().onExec();
+			mStates.firstElement().onExec(batch, parentAlpha);
 	}
 }

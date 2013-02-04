@@ -24,15 +24,21 @@
 
 package ve.com.alericoveri.blitzkrieg;
 
-import ve.com.alericoveri.blitzkrieg.Tank.State;
+import ve.com.alericoveri.blitzkrieg.StateMachine.State;
 
-import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 
-public class Projectile extends Actor
+/**
+ * 
+ * @author Alejandro Ricoveri
+ *
+ */
+abstract public class Projectile extends Actor
 {
-	private int mVelocity;
+	protected int mVelocity;
+	private StateMachine mStateMachine;
 	protected Direction mDirection;
 	
 	public enum Direction {
@@ -46,43 +52,110 @@ public class Projectile extends Actor
 	{
 		mVelocity = velocity;
 		mDirection = Direction.RIGHT;
+		mStateMachine = new StateMachine("Projectile");
 		
 		setX(x);
 		setY(y);
 		setVisible(false);
+		
+		// states
+		mStateMachine.register(
+		new State<Projectile>("ST_STILL", mStateMachine, this) {
+			
+			@Override
+			public void onEnter() {
+				mObject.onStillBegin();
+			}
+
+			@Override
+			public void onExec(SpriteBatch batch, float parentAlpha) {
+				mObject.onStill(batch, parentAlpha);
+			}
+
+			@Override
+			public void onExit() {
+				mObject.onStillEnd();
+			}
+		}
+		);
+		
+		mStateMachine.register( 
+		new State<Projectile>("ST_MOVE", mStateMachine, this) {
+			
+			@Override
+			public void onEnter() {
+				mObject.onMoveBegin();
+			}
+
+			@Override
+			public void onExec(SpriteBatch batch, float parentAlpha) {
+				
+				float deltaTime = Gdx.graphics.getDeltaTime();
+				int dxy =  (int) (mObject.mVelocity * deltaTime);
+				
+				switch (mDirection) {
+				case UP:
+					mObject.setPosition(getX(), getY() + dxy);
+					break;
+				case DOWN:
+					mObject.setPosition(getX(), getY() - dxy);
+					break;
+				case LEFT:
+					mObject.setPosition(getX() - dxy, getY());
+					break;
+				case RIGHT:
+					/* this is the default position */
+					mObject.setPosition(getX() + dxy, getY());
+					break;
+				}
+				mObject.onMove(batch, parentAlpha);
+			}
+
+			@Override
+			public void onExit() {
+				mObject.onMoveEnd();
+			}
+		}
+		);
+		
+		mStateMachine.push("ST_STILL");
+	}
+	
+	/** */
+	public void onMoveBegin () {}
+	public void onMove (SpriteBatch batch, float parentAlpha) {}
+	public void onMoveEnd () {}
+	
+	/** */
+	public void onStillBegin () {}
+	public void onStill (SpriteBatch batch, float parentAlpha) {}
+	public void onStillEnd () {}
+	
+	/** */
+	public void pop () {
+		mStateMachine.pop();
+	}
+	
+	/** */
+	public void push (String stateName) {
+		mStateMachine.push(stateName);
+	}
+	
+	/** */
+	public void swap (String stateName) {
+		mStateMachine.swap(stateName);
+	}
+	
+	@Override
+	public void draw(SpriteBatch batch, float parentAlpha) 
+	{
+		mStateMachine.run(batch, parentAlpha);
 	}
 	
 	public void move(Direction direction) 
 	{
-		MoveByAction action = new MoveByAction();
-		float distance = 0.0f;
-
-		switch (direction) 
-		{
-		case RIGHT:
-		case LEFT:
-			distance = direction == Direction.RIGHT ? Blitzkrieg.SCREEN_WIDTH
-					- getX() - getWidth() : -getX();
-			action.setAmountX(distance);
-			break;
-
-		case UP:
-		case DOWN:
-			distance = direction == Direction.UP ? Blitzkrieg.SCREEN_HEIGHT
-					- getY() - getHeight()
-					: -getY();
-			action.setAmountY(distance);
-			break;
-		}
-
-		clearActions();
-		action.setDuration(Math.abs(distance / mVelocity));
-		action.setInterpolation(Interpolation.linear);
-		//action.
-		addAction(action);
 		mDirection = direction;
-		
-		mState = State.MOVING;
+		mStateMachine.swap("ST_MOVE");
 	}
 
 	public void moveRight() {
@@ -103,5 +176,10 @@ public class Projectile extends Actor
 
 	public Direction getDirection() {
 		return mDirection;
+	}
+	
+	public void stop()
+	{
+		mStateMachine.swap("ST_STOP");
 	}
 }
