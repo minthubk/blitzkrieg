@@ -89,7 +89,12 @@ abstract public class Tank extends Projectile {
 		mStateTime += Gdx.graphics.getDeltaTime();
 		mCurrentFrame.setRegion(mAnim.getKeyFrame(mStateTime, true));
 		mCurrentFrame.setPosition(getX(), getY());
-		
+		flip();
+	}
+	
+	/** */
+	protected void flip()
+	{
 		switch (mDirection) {
 		case UP:
 			mCurrentFrame.rotate90(false);
@@ -111,6 +116,7 @@ abstract public class Tank extends Projectile {
 	public void onStill (SpriteBatch batch, float parentAlpha)
 	{
 		mCurrentFrame.setRegion(mFrames[0]);
+		flip();
 	}
 	
 	/** */
