@@ -48,11 +48,12 @@ public class Bullet extends Projectile
 	 * @param tank Owner of this bullet
 	 */
 	public Bullet(Tank tank) {
-		super(0, 0, 300);
+		super(0, 0, 350);
 		mTank = tank;
-		setX(tank.getX()); setY(tank.getY());
+		setX(tank.getX() + tank.getWidth()/2  + 8); 
+		setY(tank.getY() + tank.getHeight()/2 + 8);
 		setColor(Color.WHITE);
-		setWidth(64); setHeight(64);
+		setWidth(8); setHeight(8);
 		setVisible(true);
 		move (mTank.getDirection());
 		shapeRenderer = new ShapeRenderer();
@@ -64,9 +65,9 @@ public class Bullet extends Projectile
         //batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
         //batch.draw ();
 		
-		shapeRenderer.begin(ShapeType.FilledRectangle);
+		shapeRenderer.begin(ShapeType.FilledCircle);
 		shapeRenderer.setColor(Color.PINK);
-		shapeRenderer.filledRect(getX(), getY(), 8, 8);
+		shapeRenderer.filledCircle(getX(), getY(), 8);
 		shapeRenderer.end();
 	}
 
