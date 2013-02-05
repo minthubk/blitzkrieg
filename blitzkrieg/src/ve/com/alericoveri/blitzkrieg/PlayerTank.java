@@ -34,20 +34,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * 
  */
 public class PlayerTank extends Tank {
-	public static float MOVE_EPSILON = 10.0f;
-
 	/**
 	 * Ctor
 	 * 
 	 * @param x
 	 *            left coordinate in pixels
 	 * @param y
-	 *            top coordintate in pixels
+	 *            top coordinate in pixels
 	 */
 	public PlayerTank(int x, int y) {
 		super(x, y, 120);
-		Gdx.app.log("PlayerTank", "Initiating player tank ...");
 		setVisible(true);
+		setX(Blitzkrieg.SCREEN_WIDTH/2 - getWidth()/2);
+		setY(200);
+		mDirection = Direction.UP;
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class PlayerTank extends Tank {
 		// do the usual drawing
 		super.onMove(batch, parentAlpha);
 
-		// swap to still state if any collision ocurred
+		// swap to still state if any collision occurred
 		if (hasCollided)
 			swap("ST_STILL");
 	}

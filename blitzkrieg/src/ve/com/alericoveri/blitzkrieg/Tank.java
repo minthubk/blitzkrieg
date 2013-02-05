@@ -135,6 +135,7 @@ abstract public class Tank extends Projectile {
 	public void onStill (SpriteBatch batch, float parentAlpha)
 	{
 		mCurrentFrame.setRegion(mFrames[0]);
+		mCurrentFrame.setPosition(getX(), getY());
 		flip();
 	}
 	
