@@ -87,15 +87,19 @@ abstract public class Tank extends Projectile {
 	 * Update dimensions for this object
 	 */
 	public void updateDimensions() {
+		
+		// calculate width relative to the screen width
 		int width = (int) (0.2f * Blitzkrieg.SCREEN_WIDTH);
 
+		// set dimensions
 		setWidth(width);
 		setHeight(width);
 
+		// set current frame size
 		mCurrentFrame.setSize(width, width);
 	}
 	
-	/** */
+	/** Move animation */
 	@Override
 	public void onMove (SpriteBatch batch, float parentAlpha)
 	{
@@ -105,13 +109,13 @@ abstract public class Tank extends Projectile {
 		flip();
 	}
 	
-	/** */
+	/** Shoot a bullet */
 	public void shoot()
 	{
 		getStage().addActor(new Bullet(this));
 	}
 	
-	/** */
+	/** Flip sprite depending on current direction */
 	protected void flip()
 	{
 		switch (mDirection) {

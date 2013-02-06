@@ -29,14 +29,22 @@ import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
+/**
+ * Game main activity
+ * 
+ * @author Alejandro Ricoveri
+ *
+ */
 public class MainActivity extends AndroidApplication {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// setting up parameters
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
 		cfg.useGL20 = false;
 
+		// boot up the game
 		initialize(new Blitzkrieg(), cfg);
 	}
 }

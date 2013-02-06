@@ -24,6 +24,7 @@
 
 package ve.com.alericoveri.blitzkrieg;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -36,10 +37,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 public class Bullet extends Projectile 
 {
 	/** Time to live (in seconds) */
-	public static float TTL = 2f;
+	public static float TTL = 1f;
 	
 	private Tank mTank;
-	
+	float time = 0f;
 	ShapeRenderer shapeRenderer;
 	
 	/**
@@ -57,6 +58,7 @@ public class Bullet extends Projectile
 		setVisible(true);
 		move (mTank.getDirection());
 		shapeRenderer = new ShapeRenderer();
+		
 	}
 	
 	public void onMove (SpriteBatch batch, float parentAlpha)
@@ -69,6 +71,10 @@ public class Bullet extends Projectile
 		shapeRenderer.setColor(Color.PINK);
 		shapeRenderer.filledCircle(getX(), getY(), 8);
 		shapeRenderer.end();
+		
+		time += Gdx.graphics.getDeltaTime();
+		if (time > TTL)
+			getStage().getRoot().removeActor(this);
 	}
 
 }
