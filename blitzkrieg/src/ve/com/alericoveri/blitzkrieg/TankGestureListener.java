@@ -32,6 +32,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
  */
 public class TankGestureListener extends ActorGestureListener 
 {
+	private PlayerTank mPlayerTank;
+	
+	/**
+	 * Ctor
+	 */
+	public TankGestureListener(PlayerTank tank) {
+		mPlayerTank = tank;
+	}
+	
 	@Override
 	/** */
 	public void fling 
@@ -41,21 +50,21 @@ public class TankGestureListener extends ActorGestureListener
 		{
 			// Horizontal
 			if (velocityX > 0.0f)
-				Blitzkrieg.PlayerTank.moveRight();
-			else Blitzkrieg.PlayerTank.moveLeft();
+				mPlayerTank.moveRight();
+			else mPlayerTank.moveLeft();
 		}
 		else 
 		{
 			// Vertical
 			if (velocityY > 0.0f)
-				Blitzkrieg.PlayerTank.moveUp();
-			else Blitzkrieg.PlayerTank.moveDown();
+				mPlayerTank.moveUp();
+			else mPlayerTank.moveDown();
 		}
 	}
 	
 	@Override
 	/** */
 	public void tap (InputEvent event, float x, float y, int count, int button) {
-		Blitzkrieg.PlayerTank.shoot();
+		mPlayerTank.shoot();
 	}
 }

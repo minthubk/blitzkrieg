@@ -63,10 +63,6 @@ public class Bullet extends Projectile
 	
 	public void onMove (SpriteBatch batch, float parentAlpha)
 	{
-		Color color = getColor();
-        //batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-        //batch.draw ();
-		
 		shapeRenderer.begin(ShapeType.FilledCircle);
 		shapeRenderer.setColor(Color.PINK);
 		shapeRenderer.filledCircle(getX(), getY(), 8);

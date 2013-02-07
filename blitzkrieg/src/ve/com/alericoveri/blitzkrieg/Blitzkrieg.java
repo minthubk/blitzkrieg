@@ -27,7 +27,6 @@ package ve.com.alericoveri.blitzkrieg;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 
 /**
  * Game entry point
@@ -42,48 +41,19 @@ public class Blitzkrieg implements ApplicationListener {
 	/** Screen height in pixels */
 	public static int SCREEN_HEIGHT;
 
-	/** Unique instance for the player tank */
-	public static PlayerTank PlayerTank;
-
-	/** Background image */
-	public static Background Background;
-
 	/** Game stage */
-	private Stage mStage;
+	private GameStage mStage;
 
 	/** Initialization method */
 	@Override
 	public void create() {
 		// we'll get whatever the set width is- 800x480 above,
 		// but will be the device resolution when running the android version
-		SCREEN_WIDTH = Gdx.graphics.getWidth();
-		SCREEN_HEIGHT = Gdx.graphics.getHeight();
+		SCREEN_WIDTH 	= Gdx.graphics.getWidth();
+		SCREEN_HEIGHT 	= Gdx.graphics.getHeight();
 
 		/* set up the stage */
-		setupStage();
-	}
-
-	/** Setup the stage, where everything occurs */
-	public void setupStage() {
-		
-		// Create the stage
-		mStage = new Stage(SCREEN_WIDTH, SCREEN_HEIGHT, true);
-
-		// Create the player tank
-		PlayerTank = new PlayerTank(0, 0);
-
-		// Create the background
-		Background = new Background();
-
-		// Assign input listener for the whole stage
-		mStage.addListener(new TankGestureListener());
-
-		// Add the actors
-		mStage.addActor(Background);
-		mStage.addActor(PlayerTank);
-
-		// Setting this stage as the input processor
-		Gdx.input.setInputProcessor(mStage);
+		mStage = new GameStage();
 	}
 
 	/** Get rid of this object */
@@ -109,15 +79,10 @@ public class Blitzkrieg implements ApplicationListener {
 	public void resize(int width, int height) {
 
 		// Set width and height
-		SCREEN_WIDTH = Gdx.graphics.getWidth();
-		SCREEN_HEIGHT = Gdx.graphics.getHeight();
-
-		// Set the stage viewport
-		mStage.setViewport(width, height, true);
-
-		// Update dimensions for this entities as well
-		PlayerTank.updateDimensions();
-		Background.updateDimensions();
+		SCREEN_WIDTH 	= width;
+		SCREEN_HEIGHT 	= height;
+		
+		mStage.resize();
 	}
 
 	/** Game has been paused */
