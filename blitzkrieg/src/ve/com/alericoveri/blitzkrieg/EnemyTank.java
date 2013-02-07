@@ -24,6 +24,8 @@
 
 package ve.com.alericoveri.blitzkrieg;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 /**
  * Enemy tank
  * 
@@ -40,10 +42,51 @@ public class EnemyTank extends Tank {
 	 *            top coordinate in pixels
 	 */
 	
+	public enum Mode {
+		ATTACK, EVASION
+	}
+	
+	private Mode mMode = Mode.ATTACK;
+	
 	private PlayerTank mPlayerTank;
 	
 	public EnemyTank(int x, int y, PlayerTank tank) {
-		super(x, y, 0, 33, 150);
+		super(x, y, 0, 33, 110);
 		mPlayerTank = tank;
+		moveUp();
+	}
+	
+	public void onMove(SpriteBatch batch, float parentAlpha) {
+		int   x = (int) getX(), 
+			  y = (int) getY(), 
+			  tX = (int) mPlayerTank.getX(),
+			  tY = (int) mPlayerTank.getY();
+		
+		int dx = Math.abs(tX - x);
+		int dy = Math.abs(tY - y);
+		
+		
+		float tan = (dy > 0) ? dx/dy : 0f;
+		
+		if (mMode == Mode.ATTACK)
+		{
+			if (dy > 0) {
+				if (tan > 1.5f || tan < 0.5f) 
+				{
+					if (dx >= dy) {
+						if (tX > x)
+							mDirection = Direction.RIGHT;
+						else mDirection = Direction.LEFT;
+					}
+					else if (dy > dx) {
+						if (tY > y)
+							mDirection = Direction.UP;
+						else mDirection = Direction.DOWN;
+					}
+				}
+			}
+			//else mDirection = mPlayerTank.getDirection();
+		}
+		super.onMove(batch, parentAlpha);
 	}
 }
