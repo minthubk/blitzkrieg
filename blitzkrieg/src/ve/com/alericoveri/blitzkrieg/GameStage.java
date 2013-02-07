@@ -43,7 +43,7 @@ public class GameStage extends Stage {
 		super (Blitzkrieg.SCREEN_WIDTH, Blitzkrieg.SCREEN_HEIGHT, true);
 		
 		// Create the player tank
-		mPlayerTank = new PlayerTank(0, 0);
+		mPlayerTank = new PlayerTank();
 
 		// Create the background
 		mBackground = new Background();
@@ -75,5 +75,10 @@ public class GameStage extends Stage {
 	
 	public Background getBackground() {
 		return mBackground;
+	}
+	
+	public void spawnEnemyTank() {
+		EnemyTank tank = new EnemyTank(0, 0, mPlayerTank);
+		addActor(tank);
 	}
 }

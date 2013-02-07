@@ -60,7 +60,7 @@ abstract public class Tank extends Projectile {
 	 * @param y Initial left coordinate for this object
 	 * @param velocity Initial velocity for this object
 	 */
-	public Tank(int x, int y, int velocity) 
+	public Tank(int x, int y, int spriteOffsetX, int spriteOffsetY, int velocity) 
 	{
 		super (x, y, velocity);
 
@@ -73,7 +73,7 @@ abstract public class Tank extends Projectile {
 		// Create frames based on tecture
 		for (int i = 0; i < 8; i++) {
 			mFrames[i] = new Sprite(mTexture);
-			mFrames[i].setRegion(i * 32, 0, 32, 32);
+			mFrames[i].setRegion(spriteOffsetX + i * 32, spriteOffsetY, 32, 32);
 		}
 
 		// Create animation
@@ -81,6 +81,9 @@ abstract public class Tank extends Projectile {
 		
 		// Update dimensions for this tank
 		updateDimensions();
+		
+		// Show up
+		setVisible(true);
 	}
 	
 	/** 

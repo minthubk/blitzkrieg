@@ -41,11 +41,14 @@ public class PlayerTank extends Tank {
 	 * @param y
 	 *            top coordinate in pixels
 	 */
-	public PlayerTank(int x, int y) {
-		super(x, y, 120);
-		setVisible(true);
+	public PlayerTank() {
+		super(0, 0, 0, 0, 120);
+		
+		// Center tank
 		setX(Blitzkrieg.SCREEN_WIDTH/2 - getWidth()/2);
 		setY(200);
+		
+		// point up the tank
 		mDirection = Direction.UP;
 	}
 
