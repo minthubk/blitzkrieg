@@ -54,6 +54,9 @@ public class Blitzkrieg implements ApplicationListener {
 
 		/* set up the stage */
 		mStage = new GameStage();
+		
+		// test
+		mStage.spawnEnemyTank();
 	}
 
 	/** Get rid of this object */

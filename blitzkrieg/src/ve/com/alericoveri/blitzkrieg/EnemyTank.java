@@ -15,11 +15,11 @@
  * in a product, an acknowledgment in the product documentation would be
  * appreciated but is not required.
  *
- *2. Altered source versions must be plainly marked as such, and must not be
- *misrepresented as being the original software.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ * misrepresented as being the original software.
  *
- *3. This notice may not be removed or altered from any source
- *distribution.
+ * 3. This notice may not be removed or altered from any source
+ * distribution.
  */
 
 package ve.com.alericoveri.blitzkrieg;
@@ -39,7 +39,11 @@ public class EnemyTank extends Tank {
 	 * @param y
 	 *            top coordinate in pixels
 	 */
-	public EnemyTank(int x, int y) {
-		super(x, y, 30);
+	
+	private PlayerTank mPlayerTank;
+	
+	public EnemyTank(int x, int y, PlayerTank tank) {
+		super(x, y, 0, 33, 150);
+		mPlayerTank = tank;
 	}
 }
