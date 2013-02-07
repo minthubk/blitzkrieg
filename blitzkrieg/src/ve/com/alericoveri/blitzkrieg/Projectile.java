@@ -225,6 +225,6 @@ abstract public class Projectile extends Actor {
 
 	/** Stop (still) this */
 	public void stop() {
-		mStateMachine.swap("ST_STOP");
+		mStateMachine.swap("ST_STILL");
 	}
 }
